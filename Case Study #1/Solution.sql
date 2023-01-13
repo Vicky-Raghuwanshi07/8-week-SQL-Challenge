@@ -33,7 +33,40 @@ GROUP BY
 
 -- 3. What was the first item from the menu purchased by each customer?
 
+WITH cust_orders_cte AS(
+	SELECT
+		customer_id,
+		order_date,
+		product_name,
+		row_number() over (partition by customer_id 
+		order by order_date) as rank
+	FROM
+		dannys_diner.sales s,
+		dannys_diner.menu m
+	WHERE m.product_id = s.product_id
+)
+
+SELECT 
+	customer_id,
+	product_name
+FROM cust_orders_cte
+WHERE rank = 1;
+
+
 -- 4. What is the most purchased item on the menu and how many times was it purchased by all customers?
+
+SELECT 
+	top(1)
+	product_name,
+	count(s.product_id) as purchased
+FROM
+	dannys_diner.sales s,
+	dannys_diner.menu m
+WHERE m.product_id = s.product_id
+GROUP BY product_name
+ORDER BY purchased DESC;
+
+
 
 -- 5. Which item was the most popular for each customer?
 
