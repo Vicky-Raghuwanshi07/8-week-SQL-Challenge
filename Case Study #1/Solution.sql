@@ -69,6 +69,29 @@ ORDER BY purchased DESC;
 
 
 -- 5. Which item was the most popular for each customer?
+WITH fav_item_cte AS(
+	SELECT
+		customer_id,
+		product_name,
+		count(s.product_id) as ordered,
+		dense_rank() over (partition by customer_id 
+		order by count(s.product_id) desc) as rank
+	FROM
+		sales s,
+		menu m
+	WHERE m.product_id = s.product_id
+	GROUP BY 
+		customer_id,
+		product_name
+)
+
+SELECT 
+	customer_id,
+	product_name,
+	ordered
+FROM fav_item_cte
+WHERE rank = 1;
+
 
 -- 6. Which item was purchased first by the customer after they became a member?
 
