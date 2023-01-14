@@ -125,7 +125,39 @@ WHERE
 	AND
 	rank = 1;
 
+
 -- 7. Which item was purchased just before the customer became a member?
+WITH before_memb_orders_cte AS(
+	SELECT
+		s.customer_id,
+		order_date,
+		join_date,
+		product_id,
+		row_number() over (partition by s.customer_id
+		order by order_date desc) as rank
+	FROM
+		dannys_diner.sales s,
+		dannys_diner.members m
+	WHERE
+		m.customer_id = s.customer_id
+		AND
+		order_date < join_date
+)
+
+SELECT 
+	customer_id,
+	product_name,
+	order_date, 
+	join_date
+FROM 
+	before_memb_orders_cte mo,
+	dannys_diner.menu m
+WHERE 
+	m.product_id = mo.product_id
+	AND
+	rank = 1
+;
+
 
 -- 8. What is the total items and amount spent for each member before they became a member?
 
