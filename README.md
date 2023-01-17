@@ -26,3 +26,9 @@ You can also take this challenge by <a href="https://8weeksqlchallenge.com/">Cli
     - **members**
     
 You can inspect the entity relationship diagram and example data below.
+
+
+
+
+### **Case Study #2 - Pizza Runner**
+<img src="https://8weeksqlchallenge.com/images/case-study-designs/2.png" width="500" height="500" />
