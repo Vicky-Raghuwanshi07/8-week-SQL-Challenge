@@ -94,3 +94,38 @@ WITH pizza_count_cte AS
 SELECT MAX(pizza_per_order) AS pizza_count
 FROM pizza_count_cte;
 
+
+-- 7. For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
+
+SELECT c.customer_id,
+ SUM(CASE 
+  WHEN c.exclusions <> ' ' OR c.extras <> ' ' THEN 1
+  ELSE 0
+  END) AS at_least_1_change,
+ SUM(CASE 
+  WHEN c.exclusions = ' ' AND c.extras = ' ' THEN 1 
+  ELSE 0
+  END) AS no_change
+FROM #customer_orders AS c
+JOIN #runner_orders AS r
+ ON c.order_id = r.order_id
+WHERE r.distance != 0
+GROUP BY c.customer_id
+ORDER BY c.customer_id;
+
+
+-- 8. How many pizzas were delivered that had both exclusions and extras?
+
+SELECT  
+ SUM(CASE
+  WHEN exclusions IS NOT NULL AND extras IS NOT NULL THEN 1
+  ELSE 0
+  END) AS pizza_count_w_exclusions_extras
+FROM #customer_orders AS c
+JOIN #runner_orders AS r
+ ON c.order_id = r.order_id
+WHERE r.distance >= 1 
+ AND exclusions <> ' ' 
+ AND extras <> ' ';
+ 
+ 
