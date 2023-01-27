@@ -129,3 +129,18 @@ WHERE r.distance >= 1
  AND extras <> ' ';
  
  
+-- 9. What was the total volume of pizzas ordered for each hour of the day?
+
+SELECT DATEPART(HOUR, [order_time]) AS hour_of_day, 
+ COUNT(order_id) AS pizza_count
+FROM #customer_orders
+GROUP BY DATEPART(HOUR, [order_time]);
+
+
+-- 10. What was the volume of orders for each day of the week?
+
+SELECT FORMAT(DATEADD(DAY, 2, order_time),'dddd') AS day_of_week, 
+-- add 2 to adjust 1st day of the week as Monday
+ COUNT(order_id) AS total_pizzas_ordered
+FROM #customer_orders
+GROUP BY FORMAT(DATEADD(DAY, 2, order_time),'dddd');
